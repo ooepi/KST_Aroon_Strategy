@@ -1,0 +1,119 @@
+//@version=4
+study("KST Aroon Straregy", overlay=false)
+
+
+/////////////////////////////////---------KST--------/////////////////////////////////////
+
+ROC1 = input(10)
+ROC2 = input(15)
+ROC3 = input(20)
+ROC4 = input(30)
+SMA1 = input(9)
+
+ROCma1 = sma(roc(close, ROC1), 10)
+ROCma2 = sma(roc(close, ROC2), 10)
+ROCma3 = sma(roc(close, ROC3), 10)
+ROCma4 = sma(roc(close, ROC4), 15)
+
+KST = ROCma1 + ROCma2 * 2 + ROCma3 * 3 + ROCma4 * 4
+signal = sma(KST, SMA1)
+
+plot(KST, "KST", color=#4CAF5000)
+plot(signal, "Signal", color=#FF000000)
+
+hline(0, title="Nolla", linewidth=3, color=#FF980000)
+
+/////////////////////////////////-----KST Loppu------/////////////////////////////////////
+
+
+/////////////////////////////////-------Aroon--------/////////////////////////////////////
+
+length = input(53, minval=1)
+upper = 100 * (highestbars(high, length+1) + length)/length     
+lower = 100 * (lowestbars(low, length+1) + length)/length       
+plot(upper,"Upper", linewidth=3, color=#FF0000)                        //Upper = Punainen
+plot(lower,"Lower", linewidth=3, color=#00E60F)                        //Lower = Vihreä
+
+/////////////////////////////////----Aroon Loppu-----/////////////////////////////////////
+
+
+/////////////////////////////////-----Markkerit------/////////////////////////////////////
+
+if(lower[1]>80 and lower[0]<=80)    //Ympyrä Aroon 80 Cross Vihreä
+    risteys = label.new(bar_index, lower, color=color.purple, style=label.style_circle, size=size.tiny)
+
+if(upper[1]>80 and upper[0]<=80)    //Ympyrä Aroon 80 Cross Punainen
+    risteys = label.new(bar_index, upper, color=color.purple, style=label.style_circle, size=size.tiny)
+    
+/////////////////////////////////--Markkerit Loppu---/////////////////////////////////////
+
+
+/////////////////////////////////------Alertit-------/////////////////////////////////////
+/////--------------------------------3 Lipun häly------------------------------------/////
+
+bool threeFlagShortAlert = false
+
+if ((KST[1] > 0 and KST[0] <= 0) and ((upper[1]>80 and upper[0]<=80) or (upper[2]>80 and upper[1]<=80) or (upper[3]>80 and upper[2]<=80) or (upper[4]>80 and upper[3]<=80) or (upper[5]>80 and upper[4]<=80) or (upper[6]>80 and upper[5]<=80) or (upper[7]>80 and upper[6]<=80) or (upper[8]>80 and upper[7]<=80) or (upper[9]>80 and upper[8]<=80) or (upper[10]>80 and upper[9]<=80) or (upper[11]>80 and upper[10]<=80) or (upper[12]>80 and upper[11]<=80) or (upper[13]>80 and upper[12]<=80) or (upper[14]>80 and upper[13]<=80) or (upper[15]>80 and upper[14]<=80) or (upper[16]>80 and upper[15]<=80) or (upper[17]>80 and upper[16]<=80) or (upper[18]>80 and upper[17]<=80) or (upper[19]>80 and upper[18]<=80) or (upper[20]>80 and upper[19]<=80) or (upper[21]>80 and upper[20]<=80) or (upper[22]>80 and upper[21]<=80) or (upper[23]>80 and upper[22]<=80) or (upper[24]>80 and upper[23]<=80) or (upper[25]>80 and upper[24]<=80)) and (cross(KST[1], signal[1]) or cross(KST[2], signal[2]) or cross(KST[3], signal[3]) or cross(KST[4], signal[4]) or cross(KST[5], signal[5]) or cross(KST[6], signal[6]) or cross(KST[7], signal[7]) or cross(KST[8], signal[8]) or cross(KST[9], signal[9]) or cross(KST[10], signal[10]) or cross(KST[11], signal[11]) or cross(KST[12], signal[12]) or cross(KST[13], signal[13]) or cross(KST[14], signal[14]) or cross(KST[15], signal[15]) or cross(KST[16], signal[16]) or cross(KST[17], signal[17]) or cross(KST[18], signal[18]) or cross(KST[19], signal[19]) or cross(KST[20], signal[20]) or cross(KST[21], signal[21]) or cross(KST[22], signal[22]) or cross(KST[23], signal[23]) or cross(KST[24], signal[24]) or cross(KST[25], signal[25])))
+    threeFlagShortAlert := true
+    shortLabel = label.new(bar_index, low, style = label.style_triangledown, color = #FF000075, size = size.tiny)
+    
+alertcondition(threeFlagShortAlert, "3 lipun Short Alert", "3 lipun Short Alert - {{interval}} Min")
+
+
+bool threeFlagBuyAlert = false
+
+if ((KST[1] < 0 and KST[0] >= 0) and ((lower[1]>80 and lower[0]<=80) or (lower[2]>80 and lower[1]<=80) or (lower[3]>80 and lower[2]<=80) or (lower[4]>80 and lower[3]<=80) or (lower[5]>80 and lower[4]<=80) or (lower[6]>80 and lower[5]<=80) or (lower[7]>80 and lower[6]<=80) or (lower[8]>80 and lower[7]<=80) or (lower[9]>80 and lower[8]<=80) or (lower[10]>80 and lower[9]<=80) or (lower[11]>80 and lower[10]<=80) or (lower[12]>80 and lower[11]<=80) or (lower[13]>80 and lower[12]<=80) or (lower[14]>80 and lower[13]<=80) or (lower[15]>80 and lower[14]<=80) or (lower[16]>80 and lower[15]<=80) or (lower[17]>80 and lower[16]<=80) or (lower[18]>80 and lower[17]<=80) or (lower[19]>80 and lower[18]<=80) or (lower[20]>80 and lower[19]<=80) or (lower[21]>80 and lower[20]<=80) or (lower[22]>80 and lower[21]<=80) or (lower[23]>80 and lower[22]<=80) or (lower[24]>80 and lower[23]<=80) or (lower[25]>80 and lower[24]<=80)) and (cross(KST[1], signal[1]) or cross(KST[2], signal[2]) or cross(KST[3], signal[3]) or cross(KST[4], signal[4]) or cross(KST[5], signal[5]) or cross(KST[6], signal[6]) or cross(KST[7], signal[7]) or cross(KST[8], signal[8]) or cross(KST[9], signal[9]) or cross(KST[10], signal[10]) or cross(KST[11], signal[11]) or cross(KST[12], signal[12]) or cross(KST[13], signal[13]) or cross(KST[14], signal[14]) or cross(KST[15], signal[15]) or cross(KST[16], signal[16]) or cross(KST[17], signal[17]) or cross(KST[18], signal[18]) or cross(KST[19], signal[19]) or cross(KST[20], signal[20]) or cross(KST[21], signal[21]) or cross(KST[22], signal[22]) or cross(KST[23], signal[23]) or cross(KST[24], signal[24]) or cross(KST[25], signal[25])))
+    threeFlagBuyAlert := true
+    buyLabel = label.new(bar_index, 0, style = label.style_triangleup, color = #00FF0075, size = size.tiny)
+    
+alertcondition(threeFlagBuyAlert, "3 lipun Buy Alert", "3 lipun Buy Alert - {{interval}} Min")
+
+/////-----------------------------3 Lipun häly Loppu---------------------------------/////
+/////--------------------------------------------------------------------------------/////
+/////--------------------------------2 Lipun häly------------------------------------/////
+
+bool twoFlagShortAlert = false
+
+if ((KST[1] > 0 and KST[0] <= 0) and (cross(upper[0], lower[0]) or cross(upper[1], lower[1]) or cross(upper[2], lower[2]) or cross(upper[3], lower[3]) or cross(upper[4], lower[4]) or cross(upper[5], lower[5]) or cross(upper[6], lower[6]) or cross(upper[7], lower[7]) or cross(upper[8], lower[8]) or cross(upper[9], lower[9]) or cross(upper[10], lower[10]) or cross(upper[11], lower[11]) or cross(upper[12], lower[12]) or cross(upper[13], lower[13]) or cross(upper[14], lower[14]) or cross(upper[15], lower[15]) or cross(upper[16], lower[16]) or cross(upper[17], lower[17]) or cross(upper[18], lower[18]) or cross(upper[19], lower[19]) or cross(upper[20], lower[20])))
+    twoFlagShortAlert := true
+    shortLabel = label.new(bar_index, low, style = label.style_triangledown, color = #FF000075, size = size.tiny)
+
+if ((cross(upper, lower)) and ((KST[1] > 0 and KST[0] <= 0) or (KST[2] > 0 and KST[1] <= 0) or (KST[3] > 0 and KST[2] <= 0) or (KST[4] > 0 and KST[3] <= 0) or (KST[5] > 0 and KST[4] <= 0) or (KST[6] > 0 and KST[5] <= 0) or (KST[7] > 0 and KST[6] <= 0) or (KST[8] > 0 and KST[7] <= 0) or (KST[9] > 0 and KST[8] <= 0) or (KST[10] > 0 and KST[9] <= 0) or (KST[11] > 0 and KST[10] <= 0) or (KST[12] > 0 and KST[11] <= 0) or (KST[13] > 0 and KST[12] <= 0) or (KST[14] > 0 and KST[13] <= 0) or (KST[15] > 0 and KST[14] <= 0) or (KST[16] > 0 and KST[15] <= 0) or (KST[17] > 0 and KST[16] <= 0) or (KST[18] > 0 and KST[17] <= 0) or (KST[19] > 0 and KST[18] <= 0) or (KST[20] > 0 and KST[19] <= 0)))
+    twoFlagShortAlert := true
+    shortLabel = label.new(bar_index, low, style = label.style_triangledown, color = #FF000075, size = size.tiny)
+
+alertcondition(twoFlagShortAlert, "2 lipun Short Alert", "2 lipun Short Alert - {{interval}} Min")
+
+
+bool twoFlagBuyAlert = false
+
+if ((KST[1] < 0 and KST[0] >= 0) and (cross(upper[0], lower[0]) or cross(upper[1], lower[1]) or cross(upper[2], lower[2]) or cross(upper[3], lower[3]) or cross(upper[4], lower[4]) or cross(upper[5], lower[5]) or cross(upper[6], lower[6]) or cross(upper[7], lower[7]) or cross(upper[8], lower[8]) or cross(upper[9], lower[9]) or cross(upper[10], lower[10]) or cross(upper[11], lower[11]) or cross(upper[12], lower[12]) or cross(upper[13], lower[13]) or cross(upper[14], lower[14]) or cross(upper[15], lower[15]) or cross(upper[16], lower[16]) or cross(upper[17], lower[17]) or cross(upper[18], lower[18]) or cross(upper[19], lower[19]) or cross(upper[20], lower[20])))
+    twoFlagBuyAlert := true
+    buyLabel = label.new(bar_index, 0, style = label.style_triangleup, color = #00FF0075, size = size.tiny)
+
+if ((cross(upper, lower)) and ((KST[1] < 0 and KST[0] >= 0) or (KST[2] < 0 and KST[1] >= 0) or (KST[3] < 0 and KST[2] >= 0) or (KST[4] < 0 and KST[3] >= 0) or (KST[5] < 0 and KST[4] >= 0) or (KST[6] < 0 and KST[5] >= 0) or (KST[7] < 0 and KST[6] >= 0) or (KST[8] < 0 and KST[7] >= 0) or (KST[9] < 0 and KST[8] >= 0) or (KST[10] < 0 and KST[9] >= 0) or (KST[11] < 0 and KST[10] >= 0) or (KST[12] < 0 and KST[11] >= 0) or (KST[13] < 0 and KST[12] >= 0) or (KST[14] < 0 and KST[13] >= 0) or (KST[15] < 0 and KST[14] >= 0) or (KST[16] < 0 and KST[15] >= 0) or (KST[17] < 0 and KST[16] >= 0) or (KST[18] < 0 and KST[17] >= 0) or (KST[19] < 0 and KST[18] >= 0) or (KST[20] < 0 and KST[19] >= 0)))
+    twoFlagBuyAlert := true
+    buyLabel = label.new(bar_index, 0, style = label.style_triangleup, color = #00FF0075, size = size.tiny)
+
+alertcondition(twoFlagBuyAlert, "2 lipun Buy Alert", "2 lipun Buy Alert - {{interval}} Min")
+
+/////-----------------------------2 Lipun häly Loppu---------------------------------/////
+/////////////////////////////////---Alertit Loppu----/////////////////////////////////////
+
+
+/////////////////////////////////----Muut Merkit-----/////////////////////////////////////
+
+hline(80, "Ylaraja", color=#001aff, linestyle=hline.style_dotted, linewidth=3)
+hline(50, "Keskiviiva", color=#909090, linestyle=hline.style_solid, linewidth=2)
+hline(20, "Alaraja", color=#c28202, linestyle=hline.style_dotted, linewidth=3)
+
+/////////////////////////////////------Snippets------/////////////////////////////////////
+
+//shortLabel = label.new(bar_index, 80, text="short", color=color.red, size=size.small)
+//buyLabel = label.new(bar_index, 0, text="buy", color=color.green, size=size.small)
+
+//if (KST[1] > 0 and KST[0] <= 0)     
+//    nollaRaja = label.new(bar_index, ((KST[0]+KST[1])/2), color=#00000000, style=label.style_circle, size=size.tiny)
+
+/////////////////////////////////--------------------/////////////////////////////////////
+/////////////////////////////////--------------------/////////////////////////////////////
